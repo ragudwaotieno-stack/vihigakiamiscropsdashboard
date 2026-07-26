@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vihiga County — Crop Production Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #EFEAD9;
+    --bg-deep: #E4DEC8;
+    --paper: #FBF9F1;
+    --ink: #23301E;
+    --ink-soft: #5B6350;
+    --line: #D6CEAF;
+    --tea: #37503A;
+    --tea-deep: #263A29;
+    --maize: #C69526;
+    --clay: #A3492B;
+    --clay-soft: #C97350;
+    --bean: #6E3B33;
+    --leaf-1: #E9E4CD;
+    --leaf-2: #C7D3A8;
+    --leaf-3: #9DB77C;
+    --leaf-4: #6C9457;
+    --leaf-5: #3E6B3F;
+    --good: #4C7A45;
+    --warn: #B4682B;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(35,48,30,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    padding: 0 0 60px 0;
+  }
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Header ---------- */
+  header{
+    background: linear-gradient(180deg, var(--tea-deep) 0%, var(--tea) 100%);
+    color: var(--leaf-1);
+    padding: 34px 0 26px 0;
+    border-bottom: 6px solid var(--maize);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--leaf-3);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 10px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background: var(--maize); display:inline-block; }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1.08;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.01em;
+  }
+  header p.sub{
+    margin: 0;
+    max-width: 640px;
+    color: var(--leaf-2);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .kpi-strip{
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.12);
+    margin-top: 26px;
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+  .kpi{
+    background: rgba(255,255,255,0.03);
+    padding: 14px 16px;
+  }
+  .kpi .n{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .kpi .l{
+    font-size: 11px;
+    color: var(--leaf-3);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-top: 3px;
+  }
+
+  /* ---------- Sections ---------- */
+  section{ margin-top: 44px; }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .section-head h2{
+    font-family:'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .section-head .num{
+    font-family:'IBM Plex Mono', monospace;
+    color: var(--clay);
+    font-weight:600;
+    margin-right:8px;
+  }
+  .section-note{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    max-width: 420px;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  .card{
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 rgba(35,48,30,0.04);
+  }
+
+  /* ---------- Filter bar ---------- */
+  .filterbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding: 14px 16px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    margin-bottom: 22px;
+  }
+  .filterbar .flabel{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px; text-transform:uppercase; letter-spacing:.08em;
+    color: var(--ink-soft); margin-right: 4px;
+  }
+  .pill{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    padding: 6px 13px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all .12s ease;
+  }
+  .pill:hover{ border-color: var(--tea); }
+  .pill.active{
+    background: var(--tea);
+    border-color: var(--tea);
+    color: #fff;
+  }
+  .spacer-line{ flex:1; }
+  .metric-toggle{ display:flex; gap:2px; background:var(--line); padding:2px; border-radius: 100px; }
+  .metric-toggle button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11.5px; letter-spacing:.04em;
+    padding: 6px 12px; border-radius: 100px; border:none; cursor:pointer;
+    background: transparent; color: var(--ink-soft);
+  }
+  .metric-toggle button.active{ background: var(--paper); color: var(--ink); font-weight:600; }
+
+  /* ---------- KPI row (in-page, for filtered view) ---------- */
+  .mini-kpis{ display:flex; gap:24px; margin-bottom: 20px; flex-wrap: wrap; }
+  .mini-kpi{ font-family:'IBM Plex Mono', monospace; }
+  .mini-kpi .v{ font-size: 20px; font-weight:600; color: var(--tea-deep); }
+  .mini-kpi .k{ font-size: 10.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* ---------- Heatmap (signature element) ---------- */
+  .heatmap-wrap{ overflow-x: auto; padding-bottom: 6px; }
+  table.heatmap{ border-collapse: collapse; width: 100%; min-width: 920px; }
+  table.heatmap th, table.heatmap td{ padding: 0; text-align:center; }
+  table.heatmap thead th{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    padding: 6px 4px 10px 4px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: left;
+    height: 92px;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--tea);
+  }
+  table.heatmap thead th.rowlabel-head{ writing-mode: horizontal-tb; transform:none; vertical-align: bottom; text-align:left; padding-left:2px; }
+  table.heatmap tbody th{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size: 12.5px;
+    text-align: left;
+    padding: 0 10px 0 2px;
+    white-space: nowrap;
+    font-weight: 500;
+    border-right: 2px solid var(--tea);
+    position: sticky; left:0; background: var(--paper);
+  }
+  table.heatmap tbody th .sc{
+    display:block; font-family:'IBM Plex Mono', monospace; font-size: 9.5px; color: var(--clay); font-weight:600; letter-spacing:.04em;
+  }
+  td.cell{
+    width: 44px; height: 30px;
+    position: relative;
+    border: 1px solid var(--bg);
+  }
+  td.cell .fill{
+    position:absolute; inset: 2px;
+    border-radius: 2px;
+  }
+  td.cell .val{
+    position: relative;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    color: rgba(35,48,30,0.0);
+  }
+  td.cell:hover .fill{ outline: 1.5px solid var(--clay); }
+  tbody tr:hover th{ color: var(--clay); }
+  .legend{ display:flex; align-items:center; gap:8px; margin-top:14px; font-family:'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-soft); }
+  .legend .swatches{ display:flex; }
+  .legend .sw{ width:18px; height:12px; }
+
+  /* ---------- Two-col layout ---------- */
+  .grid2{ display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px; }
+  @media (max-width: 860px){ .grid2{ grid-template-columns: 1fr; } }
+
+  /* ---------- Bar rankings ---------- */
+  .barlist{ padding: 18px 20px 20px 20px; }
+  .barrow{ display:grid; grid-template-columns: 118px 1fr 74px; align-items:center; gap:10px; margin-bottom: 13px; }
+  .barrow .name{ font-size: 12.5px; font-weight:500; }
+  .barrow .trackwrap{ display:flex; flex-direction:column; gap:4px; }
+  .barrow .track{ background: var(--bg-deep); height: 14px; position:relative; }
+  .barrow .fill{ position:absolute; left:0; top:0; bottom:0; background: var(--tea); }
+  .barrow .fill.rank1{ background: var(--clay); }
+  .barrow .fill.rank2{ background: var(--clay-soft); }
+  .barrow .detail{ font-family:'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft); }
+  .barrow .num{ font-family:'IBM Plex Mono', monospace; font-size: 11.5px; text-align:right; color: var(--ink-soft); }
+
+  /* ---------- Subcounty table ---------- */
+  table.datatable{ width:100%; border-collapse: collapse; }
+  table.datatable th{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+    text-align:left; color: var(--ink-soft); padding: 10px 12px; border-bottom: 2px solid var(--tea);
+  }
+  table.datatable td{ padding: 11px 12px; font-size: 13px; border-bottom: 1px solid var(--line); }
+  table.datatable tr:last-child td{ border-bottom:none; }
+  table.datatable td.num, table.datatable th.num{ font-family:'IBM Plex Mono', monospace; text-align:right; }
+  .ratebar{ display:inline-flex; align-items:center; gap:6px; }
+  .ratebar .track{ width:52px; height:6px; background:var(--bg-deep); }
+  .ratebar .fill{ height:100%; background: var(--good); }
+
+  /* ---------- Stat blocks (production system, water, pesticide) ---------- */
+  .stat-cards{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 860px){ .stat-cards{ grid-template-columns: 1fr; } }
+  .stat-card{ padding: 18px 20px; }
+  .stat-card h3{ font-family:'Fraunces', serif; font-size:15px; margin: 0 0 12px 0; font-weight:600; }
+  .stackrow{ display:flex; height:22px; width:100%; overflow:hidden; margin-bottom:10px; }
+  .stackseg{ height:100%; }
+  .segkey{ display:flex; flex-direction:column; gap:5px; }
+  .segkey .item{ display:flex; align-items:center; gap:7px; font-size:11.5px; color: var(--ink-soft); }
+  .segkey .sw{ width:9px; height:9px; flex-shrink:0; }
+  .segkey b{ color: var(--ink); font-family:'IBM Plex Mono', monospace; margin-left:auto; }
+
+  /* ---------- Purpose by subcounty ---------- */
+  .purpose-rows{ padding: 18px 20px; }
+  .prow{ margin-bottom: 14px; }
+  .prow .lbl{ display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:5px; }
+  .prow .lbl b{ font-family:'IBM Plex Mono', monospace; font-weight:600; }
+  .pstack{ display:flex; height:16px; width:100%; }
+  .pstack div{ height:100%; }
+
+  footer{ margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--line); }
+  footer .flags{ display:flex; gap: 22px; flex-wrap:wrap; font-family:'IBM Plex Mono', monospace; font-size:11.5px; color: var(--warn); }
+  footer .fnote{ font-size: 11.5px; color: var(--ink-soft); margin-top:10px; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span> DEPARTMENT OF AGRICULTURE, LIVESTOCK &amp; FISHERIES — VIHIGA COUNTY</div>
+    <h1>Crop Production Register</h1>
+    <p class="sub">A field-level view of what's planted across Vihiga's six sub-counties — built from the household crop registration dataset, one row per farmer-crop entry.</p>
+    <div class="kpi-strip" id="kpiStrip"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <div class="filterbar">
+      <span class="flabel">Sub-county</span>
+      <div id="subcountyPills"></div>
+      <div class="spacer-line"></div>
+      <span class="flabel">Rank by</span>
+      <div class="metric-toggle" id="metricToggle">
+        <button data-metric="acreage" class="active">Acreage</button>
+        <button data-metric="farmers">Farmers</button>
+      </div>
+    </div>
+    <div class="mini-kpis" id="miniKpis"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2><span class="num">01</span>Ward × Crop planting grid</h2>
+      <div class="section-note" id="heatmapNote">Acreage under each crop, by ward. Darker plots = more land under that crop. Hover a cell for the exact figure. Ranked within the sub-county filter above.</div>
+    </div>
+    <div class="card">
+      <div style="padding:20px 20px 8px 20px;">
+        <div class="heatmap-wrap">
+          <table class="heatmap" id="heatmapTable"></table>
+        </div>
+        <div class="legend">
+          <span id="legendMin">0 acres</span>
+          <div class="swatches" id="legendSwatches"></div>
+          <span id="legendMax">acres</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div class="card">
+        <div class="section-head" style="padding:18px 20px 0 20px; margin-bottom:0;">
+          <h2 style="font-size:17px;"><span class="num" style="font-size:14px;">02</span>Top crops, county-wide</h2>
+        </div>
+        <div class="barlist" id="cropBars"></div>
+      </div>
+      <div class="card">
+        <div class="section-head" style="padding:18px 20px 0 20px; margin-bottom:0;">
+          <h2 style="font-size:17px;"><span class="num" style="font-size:14px;">03</span>Sub-county summary</h2>
+        </div>
+        <table class="datatable" id="subcountyTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2><span class="num">04</span>Growing practices</h2>
+      <div class="section-note">How land is farmed, watered, and protected across all 317,860 crop entries.</div>
+    </div>
+    <div class="stat-cards">
+      <div class="card stat-card" id="prodSysCard"></div>
+      <div class="card stat-card" id="waterCard"></div>
+      <div class="card stat-card" id="pestCard"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2><span class="num">05</span>Subsistence vs. commercial, by sub-county</h2>
+      <div class="section-note">Share of crop entries grown for home consumption, sale, or both.</div>
+    </div>
+    <div class="card purpose-rows" id="purposeRows"></div>
+  </section>
+
+  <footer>
+    <div class="flags" id="dataFlags"></div>
+    <div class="fnote">Built from <b>Vihiga-Crops.csv</b> — 317,860 farmer-crop records across 102,181 farmers, 25 wards and 5 sub-counties. Acreage figures exclude 2 records with negative values pending correction in the source register. This view uses pre-aggregated summaries of the full dataset for speed; ask for a cut of the raw data if you need farmer-level detail.</div>
+  </footer>
+
+</div>
+
+<script id="data" type="application/json">
+{"meta": {"totalRecords": 317860, "totalFarmers": 102181, "totalAcreage": 104712.4, "subcounties": 6, "wards": 25, "distinctCrops": 146, "negativeAcreageRows": 2, "missingWard": 6, "missingFarmerName": 541}, "topCrops": ["Maize", "Beans", "Bananas", "Napier", "Tea", "Kales", "Cowpeas", "Sweet Potatoes", "Cassava", "Groundnuts", "Avocados", "Black Nightshade", "Sugar Cane", "Pumpkins"], "bySubcounty": [{"Subcounty": "Sabatia", "records": 97155.0, "farmers": 22191.0, "acreage": 23134.7, "certifiedRate": 31.5, "pesticideRate": 4.0}, {"Subcounty": "Luanda", "records": 41010.0, "farmers": 18624.0, "acreage": 17479.0, "certifiedRate": 39.2, "pesticideRate": 7.9}, {"Subcounty": "Emuhaya", "records": 42572.0, "farmers": 17184.0, "acreage": 18589.6, "certifiedRate": 36.0, "pesticideRate": 4.5}, {"Subcounty": "Vihiga", "records": 46451.0, "farmers": 16177.0, "acreage": 10790.8, "certifiedRate": 37.0, "pesticideRate": 3.1}, {"Subcounty": "Hamisi", "records": 61292.0, "farmers": 16002.0, "acreage": 18496.5, "certifiedRate": 27.5, "pesticideRate": 4.8}, {"Subcounty": "Tiriki East", "records": 29380.0, "farmers": 12003.0, "acreage": 16221.9, "certifiedRate": 28.8, "pesticideRate": 3.1}], "byWard": [{"Subcounty": "Emuhaya", "Ward": "North East Bunyore", "records": 15704.0, "farmers": 5911.0, "acreage": 5956.1, "certifiedRate": 46.1, "pesticideRate": 6.4}, {"Subcounty": "Emuhaya", "Ward": "West Bunyore", "records": 12298.0, "farmers": 5811.0, "acreage": 6466.8, "certifiedRate": 30.4, "pesticideRate": 5.0}, {"Subcounty": "Emuhaya", "Ward": "Central Bunyore", "records": 14570.0, "farmers": 5462.0, "acreage": 6166.8, "certifiedRate": 29.9, "pesticideRate": 2.2}, {"Subcounty": "Luanda", "Ward": "Wemilabi", "records": 12210.0, "farmers": 5250.0, "acreage": 3692.6, "certifiedRate": 38.0, "pesticideRate": 10.2}, {"Subcounty": "Vihiga", "Ward": "Lugaga-Wamuluma", "records": 15741.0, "farmers": 4960.0, "acreage": 2921.9, "certifiedRate": 34.2, "pesticideRate": 3.5}, {"Subcounty": "Tiriki East", "Ward": "Shamakhokho", "records": 12061.0, "farmers": 4812.0, "acreage": 8369.1, "certifiedRate": 25.8, "pesticideRate": 2.5}, {"Subcounty": "Hamisi", "Ward": "Banja", "records": 13415.0, "farmers": 4419.0, "acreage": 4045.2, "certifiedRate": 32.0, "pesticideRate": 4.6}, {"Subcounty": "Sabatia", "Ward": "Busali", "records": 22938.0, "farmers": 4361.0, "acreage": 5199.7, "certifiedRate": 21.7, "pesticideRate": 2.8}, {"Subcounty": "Luanda", "Ward": "Luanda South", "records": 8874.0, "farmers": 4194.0, "acreage": 5910.6, "certifiedRate": 41.2, "pesticideRate": 6.1}, {"Subcounty": "Hamisi", "Ward": "Gisambai", "records": 14913.0, "farmers": 4136.0, "acreage": 5785.0, "certifiedRate": 36.6, "pesticideRate": 2.1}, {"Subcounty": "Vihiga", "Ward": "Mungoma", "records": 11280.0, "farmers": 4097.0, "acreage": 3567.7, "certifiedRate": 44.0, "pesticideRate": 2.3}, {"Subcounty": "Sabatia", "Ward": "Lyaduywa/Izava", "records": 15882.0, "farmers": 4035.0, "acreage": 3117.6, "certifiedRate": 37.3, "pesticideRate": 2.7}, {"Subcounty": "Tiriki East", "Ward": "Shiru", "records": 10777.0, "farmers": 4009.0, "acreage": 3624.9, "certifiedRate": 27.0, "pesticideRate": 4.8}, {"Subcounty": "Hamisi", "Ward": "Jepkoyai", "records": 17020.0, "farmers": 3842.0, "acreage": 5846.5, "certifiedRate": 21.4, "pesticideRate": 9.2}, {"Subcounty": "Vihiga", "Ward": "South Maragoli", "records": 9380.0, "farmers": 3758.0, "acreage": 2370.6, "certifiedRate": 32.3, "pesticideRate": 2.0}, {"Subcounty": "Luanda", "Ward": "Mwibona", "records": 8388.0, "farmers": 3661.0, "acreage": 4030.6, "certifiedRate": 41.5, "pesticideRate": 6.3}, {"Subcounty": "Sabatia", "Ward": "Wodanga", "records": 15398.0, "farmers": 3614.0, "acreage": 2612.0, "certifiedRate": 26.1, "pesticideRate": 2.1}, {"Subcounty": "Hamisi", "Ward": "Tambua", "records": 15944.0, "farmers": 3605.0, "acreage": 2819.8, "certifiedRate": 21.7, "pesticideRate": 2.9}, {"Subcounty": "Luanda", "Ward": "Emabungo", "records": 7223.0, "farmers": 3545.0, "acreage": 2650.1, "certifiedRate": 36.9, "pesticideRate": 5.7}, {"Subcounty": "Sabatia", "Ward": "West Sabatia", "records": 13211.0, "farmers": 3434.0, "acreage": 4853.6, "certifiedRate": 40.3, "pesticideRate": 4.0}, {"Subcounty": "Sabatia", "Ward": "North Maragoli", "records": 14832.0, "farmers": 3383.0, "acreage": 3638.6, "certifiedRate": 31.4, "pesticideRate": 2.6}, {"Subcounty": "Sabatia", "Ward": "Chavakali", "records": 14894.0, "farmers": 3364.0, "acreage": 3713.1, "certifiedRate": 38.4, "pesticideRate": 10.6}, {"Subcounty": "Vihiga", "Ward": "Central Maragoli", "records": 10047.0, "farmers": 3361.0, "acreage": 1930.1, "certifiedRate": 37.9, "pesticideRate": 4.6}, {"Subcounty": "Tiriki East", "Ward": "Muhudu", "records": 6542.0, "farmers": 3182.0, "acreage": 4227.9, "certifiedRate": 37.2, "pesticideRate": 1.6}, {"Subcounty": "Luanda", "Ward": "Luanda Township", "records": 4312.0, "farmers": 1973.0, "acreage": 1195.0, "certifiedRate": 37.6, "pesticideRate": 12.0}], "byCrop": [{"CropName": "Maize", "records": 97016.0, "farmers": 97016.0, "acreage": 45931.5, "certifiedRate": 63.1, "pesticideRate": 5.3}, {"CropName": "Beans", "records": 76873.0, "farmers": 76705.0, "acreage": 32603.2, "certifiedRate": 24.5, "pesticideRate": 4.5}, {"CropName": "Bananas", "records": 38687.0, "farmers": 38687.0, "acreage": 5764.6, "certifiedRate": 12.0, "pesticideRate": 2.0}, {"CropName": "Napier", "records": 19601.0, "farmers": 19601.0, "acreage": 4170.8, "certifiedRate": 9.5, "pesticideRate": 1.1}, {"CropName": "Tea", "records": 6574.0, "farmers": 6574.0, "acreage": 3560.8, "certifiedRate": 37.1, "pesticideRate": 7.0}, {"CropName": "Kales", "records": 15226.0, "farmers": 15226.0, "acreage": 2432.1, "certifiedRate": 31.3, "pesticideRate": 14.8}, {"CropName": "Cowpeas", "records": 13892.0, "farmers": 13892.0, "acreage": 1946.4, "certifiedRate": 21.4, "pesticideRate": 3.8}, {"CropName": "Sweet Potatoes", "records": 8931.0, "farmers": 8931.0, "acreage": 1283.4, "certifiedRate": 8.2, "pesticideRate": 1.9}, {"CropName": "Cassava", "records": 6370.0, "farmers": 6370.0, "acreage": 1051.3, "certifiedRate": 7.5, "pesticideRate": 1.9}, {"CropName": "Groundnuts", "records": 2810.0, "farmers": 2810.0, "acreage": 915.9, "certifiedRate": 13.5, "pesticideRate": 2.3}, {"CropName": "Avocados", "records": 5250.0, "farmers": 5250.0, "acreage": 669.4, "certifiedRate": 10.3, "pesticideRate": 0.9}, {"CropName": "Black Nightshade", "records": 2814.0, "farmers": 2814.0, "acreage": 468.9, "certifiedRate": 26.2, "pesticideRate": 7.4}, {"CropName": "Sugar Cane", "records": 2753.0, "farmers": 2753.0, "acreage": 404.2, "certifiedRate": 10.9, "pesticideRate": 1.6}, {"CropName": "Pumpkins", "records": 1761.0, "farmers": 1761.0, "acreage": 322.5, "certifiedRate": 14.7, "pesticideRate": 2.0}, {"CropName": "Amaranths", "records": 1894.0, "farmers": 1894.0, "acreage": 292.8, "certifiedRate": 24.3, "pesticideRate": 4.9}, {"CropName": "Yams", "records": 1580.0, "farmers": 1580.0, "acreage": 244.5, "certifiedRate": 11.8, "pesticideRate": 0.9}, {"CropName": "Soybeans", "records": 1020.0, "farmers": 1020.0, "acreage": 235.4, "certifiedRate": 23.4, "pesticideRate": 2.9}, {"CropName": "Spider plant", "records": 1089.0, "farmers": 1089.0, "acreage": 225.7, "certifiedRate": 25.1, "pesticideRate": 6.7}, {"CropName": "Jute plant", "records": 2652.0, "farmers": 2652.0, "acreage": 201.7, "certifiedRate": 19.6, "pesticideRate": 2.1}, {"CropName": "Mangoes", "records": 1108.0, "farmers": 1108.0, "acreage": 195.6, "certifiedRate": 9.8, "pesticideRate": 2.4}, {"CropName": "Potatoes", "records": 830.0, "farmers": 830.0, "acreage": 162.0, "certifiedRate": 9.8, "pesticideRate": 3.3}, {"CropName": "Pawpaws", "records": 946.0, "farmers": 946.0, "acreage": 146.3, "certifiedRate": 18.7, "pesticideRate": 2.3}, {"CropName": "Slender Leaf", "records": 1202.0, "farmers": 1202.0, "acreage": 132.8, "certifiedRate": 21.5, "pesticideRate": 2.7}, {"CropName": "Millet", "records": 373.0, "farmers": 373.0, "acreage": 123.3, "certifiedRate": 31.4, "pesticideRate": 4.3}, {"CropName": "Other (specify)", "records": 778.0, "farmers": 778.0, "acreage": 106.3, "certifiedRate": 34.7, "pesticideRate": 5.4}, {"CropName": "Leaf Amaranth", "records": 642.0, "farmers": 642.0, "acreage": 100.0, "certifiedRate": 45.6, "pesticideRate": 5.5}, {"CropName": "Onions", "records": 558.0, "farmers": 558.0, "acreage": 98.9, "certifiedRate": 23.5, "pesticideRate": 5.6}, {"CropName": "Arrow root", "records": 651.0, "farmers": 651.0, "acreage": 97.8, "certifiedRate": 8.3, "pesticideRate": 1.1}, {"CropName": "Guavas", "records": 707.0, "farmers": 707.0, "acreage": 86.1, "certifiedRate": 9.8, "pesticideRate": 1.7}, {"CropName": "Spinach", "records": 391.0, "farmers": 391.0, "acreage": 65.2, "certifiedRate": 57.8, "pesticideRate": 20.7}, {"CropName": "Sorghum", "records": 229.0, "farmers": 229.0, "acreage": 61.8, "certifiedRate": 24.5, "pesticideRate": 3.1}, {"CropName": "Carnations", "records": 102.0, "farmers": 102.0, "acreage": 47.0, "certifiedRate": 13.7, "pesticideRate": 5.9}, {"CropName": "Coffee", "records": 187.0, "farmers": 187.0, "acreage": 44.0, "certifiedRate": 28.9, "pesticideRate": 10.2}, {"CropName": "Okra", "records": 113.0, "farmers": 113.0, "acreage": 30.4, "certifiedRate": 4.4, "pesticideRate": 1.8}, {"CropName": "Tomatoes", "records": 188.0, "farmers": 188.0, "acreage": 30.0, "certifiedRate": 61.7, "pesticideRate": 35.6}, {"CropName": "Bracharia", "records": 72.0, "farmers": 72.0, "acreage": 29.8, "certifiedRate": 47.2, "pesticideRate": 4.2}, {"CropName": "Cabbages", "records": 117.0, "farmers": 117.0, "acreage": 29.6, "certifiedRate": 67.5, "pesticideRate": 28.2}, {"CropName": "Broccoli", "records": 40.0, "farmers": 40.0, "acreage": 29.0, "certifiedRate": 2.5, "pesticideRate": 0.0}, {"CropName": "Spring Onion", "records": 64.0, "farmers": 64.0, "acreage": 22.8, "certifiedRate": 18.8, "pesticideRate": 3.1}, {"CropName": "Calliandra", "records": 76.0, "farmers": 76.0, "acreage": 21.6, "certifiedRate": 32.9, "pesticideRate": 1.3}, {"CropName": "Passion fruits", "records": 179.0, "farmers": 179.0, "acreage": 18.6, "certifiedRate": 29.6, "pesticideRate": 7.8}, {"CropName": "Green Grams", "records": 82.0, "farmers": 82.0, "acreage": 17.5, "certifiedRate": 31.7, "pesticideRate": 11.0}, {"CropName": "Sunflower", "records": 20.0, "farmers": 20.0, "acreage": 17.4, "certifiedRate": 55.0, "pesticideRate": 15.0}, {"CropName": "Peas", "records": 112.0, "farmers": 112.0, "acreage": 17.2, "certifiedRate": 23.2, "pesticideRate": 8.0}, {"CropName": "Peppers", "records": 37.0, "farmers": 37.0, "acreage": 15.4, "certifiedRate": 13.5, "pesticideRate": 8.1}, {"CropName": "Grain Amaranthus", "records": 88.0, "farmers": 88.0, "acreage": 15.3, "certifiedRate": 46.6, "pesticideRate": 3.4}, {"CropName": "Bambara", "records": 43.0, "farmers": 43.0, "acreage": 12.7, "certifiedRate": 18.6, "pesticideRate": 14.0}, {"CropName": "Sweet Sorghum", "records": 57.0, "farmers": 57.0, "acreage": 11.6, "certifiedRate": 17.5, "pesticideRate": 1.8}, {"CropName": "Cucumbers", "records": 35.0, "farmers": 35.0, "acreage": 10.0, "certifiedRate": 48.6, "pesticideRate": 25.7}, {"CropName": "Lemon Grass", "records": 10.0, "farmers": 10.0, "acreage": 9.1, "certifiedRate": 10.0, "pesticideRate": 0.0}, {"CropName": "Barley", "records": 11.0, "farmers": 11.0, "acreage": 8.9, "certifiedRate": 54.5, "pesticideRate": 18.2}, {"CropName": "White Sapote", "records": 54.0, "farmers": 54.0, "acreage": 8.5, "certifiedRate": 14.8, "pesticideRate": 1.9}, {"CropName": "Cashew nuts", "records": 12.0, "farmers": 12.0, "acreage": 8.2, "certifiedRate": 16.7, "pesticideRate": 8.3}, {"CropName": "Carrots", "records": 48.0, "farmers": 48.0, "acreage": 8.0, "certifiedRate": 52.1, "pesticideRate": 4.2}, {"CropName": "Pineapples", "records": 52.0, "farmers": 52.0, "acreage": 7.5, "certifiedRate": 28.8, "pesticideRate": 3.8}, {"CropName": "Bamboo", "records": 51.0, "farmers": 51.0, "acreage": 7.3, "certifiedRate": 33.3, "pesticideRate": 2.0}, {"CropName": "Tumeric", "records": 3.0, "farmers": 3.0, "acreage": 7.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Desmodium", "records": 38.0, "farmers": 38.0, "acreage": 7.1, "certifiedRate": 52.6, "pesticideRate": 7.9}, {"CropName": "Eggplant", "records": 51.0, "farmers": 51.0, "acreage": 7.1, "certifiedRate": 43.1, "pesticideRate": 17.6}, {"CropName": "Stinging Nettle", "records": 15.0, "farmers": 15.0, "acreage": 7.0, "certifiedRate": 60.0, "pesticideRate": 13.3}, {"CropName": "Corriander", "records": 46.0, "farmers": 46.0, "acreage": 6.3, "certifiedRate": 56.5, "pesticideRate": 4.3}, {"CropName": "Anthurium", "records": 25.0, "farmers": 25.0, "acreage": 5.9, "certifiedRate": 4.0, "pesticideRate": 0.0}, {"CropName": "Tree Tomato", "records": 39.0, "farmers": 39.0, "acreage": 4.6, "certifiedRate": 35.9, "pesticideRate": 15.4}, {"CropName": "Lucerne", "records": 29.0, "farmers": 29.0, "acreage": 4.6, "certifiedRate": 31.0, "pesticideRate": 6.9}, {"CropName": "Wheat", "records": 27.0, "farmers": 27.0, "acreage": 4.5, "certifiedRate": 44.4, "pesticideRate": 3.7}, {"CropName": "Chilies", "records": 14.0, "farmers": 14.0, "acreage": 3.9, "certifiedRate": 71.4, "pesticideRate": 14.3}, {"CropName": "Bulb Onion", "records": 26.0, "farmers": 26.0, "acreage": 3.6, "certifiedRate": 53.8, "pesticideRate": 23.1}, {"CropName": "Macadamia nuts", "records": 13.0, "farmers": 13.0, "acreage": 3.5, "certifiedRate": 23.1, "pesticideRate": 0.0}, {"CropName": "Oranges", "records": 24.0, "farmers": 24.0, "acreage": 3.3, "certifiedRate": 45.8, "pesticideRate": 16.7}, {"CropName": "Aloe", "records": 3.0, "farmers": 3.0, "acreage": 3.2, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Pigeon Peas", "records": 21.0, "farmers": 21.0, "acreage": 3.2, "certifiedRate": 38.1, "pesticideRate": 28.6}, {"CropName": "Asparagus", "records": 40.0, "farmers": 40.0, "acreage": 2.7, "certifiedRate": 32.5, "pesticideRate": 2.5}, {"CropName": "Courgettes", "records": 4.0, "farmers": 4.0, "acreage": 2.6, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Tobacco", "records": 18.0, "farmers": 18.0, "acreage": 2.5, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Capsicum", "records": 21.0, "farmers": 21.0, "acreage": 2.5, "certifiedRate": 85.7, "pesticideRate": 33.3}, {"CropName": "Water melon", "records": 12.0, "farmers": 12.0, "acreage": 2.3, "certifiedRate": 50.0, "pesticideRate": 16.7}, {"CropName": "Kikuyu grass", "records": 8.0, "farmers": 8.0, "acreage": 2.3, "certifiedRate": 25.0, "pesticideRate": 0.0}, {"CropName": "Lentils", "records": 13.0, "farmers": 13.0, "acreage": 2.2, "certifiedRate": 38.5, "pesticideRate": 7.7}, {"CropName": "French Beans", "records": 14.0, "farmers": 14.0, "acreage": 2.2, "certifiedRate": 42.9, "pesticideRate": 14.3}, {"CropName": "Dates", "records": 3.0, "farmers": 3.0, "acreage": 2.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Ginger", "records": 6.0, "farmers": 6.0, "acreage": 2.1, "certifiedRate": 50.0, "pesticideRate": 0.0}, {"CropName": "Plantains", "records": 8.0, "farmers": 8.0, "acreage": 1.9, "certifiedRate": 37.5, "pesticideRate": 0.0}, {"CropName": "Lettuce", "records": 15.0, "farmers": 15.0, "acreage": 1.6, "certifiedRate": 40.0, "pesticideRate": 40.0}, {"CropName": "Moringa", "records": 11.0, "farmers": 11.0, "acreage": 1.6, "certifiedRate": 36.4, "pesticideRate": 9.1}, {"CropName": "Stevia", "records": 2.0, "farmers": 2.0, "acreage": 1.6, "certifiedRate": 50.0, "pesticideRate": 50.0}, {"CropName": "Rice", "records": 9.0, "farmers": 9.0, "acreage": 1.4, "certifiedRate": 77.8, "pesticideRate": 11.1}, {"CropName": "Beetroot", "records": 8.0, "farmers": 8.0, "acreage": 1.4, "certifiedRate": 62.5, "pesticideRate": 12.5}, {"CropName": "Lemons", "records": 8.0, "farmers": 8.0, "acreage": 1.4, "certifiedRate": 50.0, "pesticideRate": 12.5}, {"CropName": "Apples", "records": 10.0, "farmers": 10.0, "acreage": 1.3, "certifiedRate": 60.0, "pesticideRate": 20.0}, {"CropName": "Karella", "records": 5.0, "farmers": 5.0, "acreage": 1.2, "certifiedRate": 40.0, "pesticideRate": 20.0}, {"CropName": "Sugar Beet", "records": 3.0, "farmers": 3.0, "acreage": 1.1, "certifiedRate": 66.7, "pesticideRate": 33.3}, {"CropName": "Garlic", "records": 4.0, "farmers": 4.0, "acreage": 1.1, "certifiedRate": 25.0, "pesticideRate": 25.0}, {"CropName": "Pennisetum", "records": 2.0, "farmers": 2.0, "acreage": 1.0, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Parsley", "records": 2.0, "farmers": 2.0, "acreage": 1.0, "certifiedRate": 50.0, "pesticideRate": 50.0}, {"CropName": "Arabicum", "records": 2.0, "farmers": 2.0, "acreage": 1.0, "certifiedRate": 50.0, "pesticideRate": 100.0}, {"CropName": "Broad Beans", "records": 7.0, "farmers": 7.0, "acreage": 0.9, "certifiedRate": 28.6, "pesticideRate": 0.0}, {"CropName": "Star grass", "records": 4.0, "farmers": 4.0, "acreage": 0.9, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Miraa", "records": 9.0, "farmers": 9.0, "acreage": 0.9, "certifiedRate": 22.2, "pesticideRate": 22.2}, {"CropName": "Strawberries", "records": 14.0, "farmers": 14.0, "acreage": 0.9, "certifiedRate": 42.9, "pesticideRate": 7.1}, {"CropName": "Oil Palm", "records": 3.0, "farmers": 3.0, "acreage": 0.8, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Easter Lilly", "records": 9.0, "farmers": 9.0, "acreage": 0.8, "certifiedRate": 11.1, "pesticideRate": 0.0}, {"CropName": "Basil", "records": 6.0, "farmers": 6.0, "acreage": 0.8, "certifiedRate": 66.7, "pesticideRate": 16.7}, {"CropName": "Leeks", "records": 12.0, "farmers": 12.0, "acreage": 0.7, "certifiedRate": 33.3, "pesticideRate": 8.3}, {"CropName": "Guatemala", "records": 8.0, "farmers": 8.0, "acreage": 0.7, "certifiedRate": 37.5, "pesticideRate": 0.0}, {"CropName": "Grapefruits", "records": 4.0, "farmers": 4.0, "acreage": 0.7, "certifiedRate": 50.0, "pesticideRate": 25.0}, {"CropName": "Jojoba", "records": 8.0, "farmers": 8.0, "acreage": 0.6, "certifiedRate": 37.5, "pesticideRate": 0.0}, {"CropName": "Cinnamon", "records": 3.0, "farmers": 3.0, "acreage": 0.6, "certifiedRate": 33.3, "pesticideRate": 0.0}, {"CropName": "Leucaena", "records": 2.0, "farmers": 2.0, "acreage": 0.6, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Simsim", "records": 4.0, "farmers": 4.0, "acreage": 0.5, "certifiedRate": 25.0, "pesticideRate": 25.0}, {"CropName": "Cocoa", "records": 1.0, "farmers": 1.0, "acreage": 0.5, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Rosemary", "records": 14.0, "farmers": 14.0, "acreage": 0.5, "certifiedRate": 14.3, "pesticideRate": 7.1}, {"CropName": "Oats", "records": 3.0, "farmers": 3.0, "acreage": 0.4, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Tangerines", "records": 3.0, "farmers": 3.0, "acreage": 0.4, "certifiedRate": 33.3, "pesticideRate": 0.0}, {"CropName": "Sisal", "records": 4.0, "farmers": 4.0, "acreage": 0.4, "certifiedRate": 25.0, "pesticideRate": 0.0}, {"CropName": "Jatropha", "records": 5.0, "farmers": 5.0, "acreage": 0.4, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Lupins", "records": 5.0, "farmers": 5.0, "acreage": 0.4, "certifiedRate": 60.0, "pesticideRate": 80.0}, {"CropName": "Chickpeas", "records": 7.0, "farmers": 7.0, "acreage": 0.4, "certifiedRate": 14.3, "pesticideRate": 0.0}, {"CropName": "Papyrus", "records": 1.0, "farmers": 1.0, "acreage": 0.4, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Coconuts", "records": 7.0, "farmers": 7.0, "acreage": 0.3, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Guard", "records": 5.0, "farmers": 5.0, "acreage": 0.2, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Dudhi", "records": 6.0, "farmers": 6.0, "acreage": 0.2, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Cauliflower", "records": 2.0, "farmers": 2.0, "acreage": 0.2, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Lavender", "records": 6.0, "farmers": 6.0, "acreage": 0.2, "certifiedRate": 83.3, "pesticideRate": 16.7}, {"CropName": "Lime", "records": 1.0, "farmers": 1.0, "acreage": 0.2, "certifiedRate": 100.0, "pesticideRate": 0.0}, {"CropName": "Butter Nu", "records": 4.0, "farmers": 4.0, "acreage": 0.2, "certifiedRate": 50.0, "pesticideRate": 25.0}, {"CropName": "Alstroemeria", "records": 1.0, "farmers": 1.0, "acreage": 0.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Vetches", "records": 2.0, "farmers": 2.0, "acreage": 0.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Sesbania", "records": 3.0, "farmers": 3.0, "acreage": 0.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Bixa", "records": 3.0, "farmers": 3.0, "acreage": 0.1, "certifiedRate": 33.3, "pesticideRate": 0.0}, {"CropName": "Carthamus", "records": 4.0, "farmers": 4.0, "acreage": 0.1, "certifiedRate": 25.0, "pesticideRate": 0.0}, {"CropName": "Veronica", "records": 2.0, "farmers": 2.0, "acreage": 0.1, "certifiedRate": 100.0, "pesticideRate": 0.0}, {"CropName": "Olives", "records": 1.0, "farmers": 1.0, "acreage": 0.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Radish", "records": 1.0, "farmers": 1.0, "acreage": 0.1, "certifiedRate": 100.0, "pesticideRate": 0.0}, {"CropName": "Themeda Grass", "records": 1.0, "farmers": 1.0, "acreage": 0.1, "certifiedRate": 100.0, "pesticideRate": 0.0}, {"CropName": "Orchids", "records": 1.0, "farmers": 1.0, "acreage": 0.1, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Rapeseed", "records": 1.0, "farmers": 1.0, "acreage": 0.1, "certifiedRate": 100.0, "pesticideRate": 0.0}, {"CropName": "Pears", "records": 3.0, "farmers": 3.0, "acreage": 0.1, "certifiedRate": 33.3, "pesticideRate": 0.0}, {"CropName": "Apricots", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 100.0, "pesticideRate": 100.0}, {"CropName": "Begonia", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 100.0, "pesticideRate": 100.0}, {"CropName": "Kenaf", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Castor", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Cloves", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 100.0, "pesticideRate": 100.0}, {"CropName": "Love grass", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Mushroom", "records": 2.0, "farmers": 2.0, "acreage": 0.0, "certifiedRate": 100.0, "pesticideRate": 0.0}, {"CropName": "Setaria", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 0.0, "pesticideRate": 0.0}, {"CropName": "Turnip", "records": 1.0, "farmers": 1.0, "acreage": 0.0, "certifiedRate": 0.0, "pesticideRate": 0.0}], "purposePctBySubcounty": {"Emuhaya": {"Both": 12.8, "Commercial": 2.1, "Subsistence": 85.1}, "Hamisi": {"Both": 14.4, "Commercial": 2.7, "Subsistence": 82.9}, "Luanda": {"Both": 23.9, "Commercial": 1.6, "Subsistence": 74.4}, "Sabatia": {"Both": 13.6, "Commercial": 4.1, "Subsistence": 82.4}, "Tiriki East": {"Both": 11.8, "Commercial": 4.9, "Subsistence": 83.3}, "Vihiga": {"Both": 15.4, "Commercial": 2.6, "Subsistence": 82.0}}, "productionSystem": {"Mixed farming(intercropping)": 233710, "Mono-cropping": 73108, "Plantations": 6640, "Agroforestry": 4127, "Green houses": 275}, "waterSource": {"Rainfed": 316283, "Both": 931, "Irrigated": 646}, "wardCropPivot": {"wards": ["North East Bunyore", "West Bunyore", "Central Bunyore", "Wemilabi", "Lugaga-Wamuluma", "Shamakhokho", "Banja", "Busali", "Luanda South", "Gisambai", "Mungoma", "Lyaduywa/Izava", "Shiru", "Jepkoyai", "South Maragoli", "Mwibona", "Wodanga", "Tambua", "Emabungo", "West Sabatia", "North Maragoli", "Chavakali", "Central Maragoli", "Muhudu", "Luanda Township"], "crops": ["Maize", "Beans", "Bananas", "Napier", "Tea", "Kales", "Cowpeas", "Sweet Potatoes", "Cassava", "Groundnuts", "Avocados", "Black Nightshade", "Sugar Cane", "Pumpkins", "Other"], "matrixAcreage": [[3112.3, 1820.5, 128.9, 315.0, 77.3, 96.2, 86.0, 52.7, 31.1, 34.4, 3.9, 2.6, 19.3, 1.3, 174.6], [3735.1, 2201.9, 117.9, 74.5, 1.8, 60.8, 23.1, 28.5, 32.5, 91.9, 4.1, 5.1, 9.5, 0.6, 79.5], [2995.4, 2220.4, 181.9, 229.0, 9.2, 127.6, 74.1, 55.8, 60.5, 46.0, 3.1, 21.9, 19.8, 3.0, 119.0], [1812.5, 1324.1, 106.6, 124.8, 20.8, 58.9, 40.1, 36.2, 16.8, 34.9, 3.9, 6.9, 12.0, 3.5, 90.5], [1197.0, 979.3, 180.8, 198.7, 72.5, 57.5, 57.6, 34.0, 17.7, 10.7, 5.5, 2.9, 13.2, 3.1, 91.4], [2852.2, 2275.9, 1065.9, 415.4, 787.6, 405.4, 161.2, 91.7, 11.8, 2.4, 18.5, 0.4, 28.0, 131.2, 121.5], [1735.4, 1423.1, 213.9, 164.0, 205.2, 79.1, 19.9, 56.7, 27.4, 2.4, 13.7, 3.2, 25.8, 4.4, 71.1], [2141.0, 1702.6, 293.6, 251.2, 354.5, 98.3, 79.4, 31.2, 25.0, 0.8, 42.6, 14.3, 35.9, 12.0, 117.4], [2713.6, 2189.3, 178.1, 54.5, 0.0, 167.2, 20.3, 68.3, 115.0, 225.3, 0.8, 17.5, 9.9, 1.3, 149.5], [2258.3, 1935.3, 364.5, 311.5, 221.8, 124.1, 122.3, 109.9, 58.8, 15.0, 17.6, 34.2, 18.4, 12.9, 180.2], [1820.6, 1166.1, 85.9, 55.9, 47.6, 35.3, 36.2, 37.9, 25.3, 112.9, 10.8, 19.5, 2.2, 0.6, 111.0], [1290.3, 1093.3, 217.6, 136.7, 131.5, 39.1, 63.6, 20.1, 13.4, 1.4, 22.6, 8.3, 20.5, 7.2, 51.9], [1798.8, 1166.5, 187.5, 138.6, 155.9, 60.9, 14.7, 29.6, 14.6, 0.6, 3.1, 2.2, 8.2, 5.7, 37.8], [1824.1, 1642.8, 355.9, 234.8, 6.2, 145.6, 237.4, 158.0, 141.1, 75.2, 131.9, 116.9, 34.4, 60.7, 681.4], [1258.4, 629.3, 162.0, 83.4, 22.8, 26.5, 16.8, 28.1, 25.8, 65.6, 15.4, 0.2, 1.8, 1.3, 33.2], [1799.1, 1038.9, 195.4, 98.2, 0.0, 191.1, 117.3, 107.9, 144.0, 97.0, 6.5, 27.9, 43.1, 8.4, 155.8], [1072.3, 423.9, 224.3, 189.4, 462.3, 53.7, 45.2, 37.1, 17.1, 0.7, 20.0, 2.4, 8.6, 5.7, 49.2], [1073.1, 895.8, 143.0, 138.5, 30.4, 86.8, 64.6, 88.6, 76.8, 34.8, 27.3, 20.4, 5.7, 10.3, 123.6], [1527.6, 620.4, 190.1, 77.6, 2.8, 33.0, 27.1, 18.0, 10.8, 34.6, 13.5, 19.6, 7.0, 5.6, 62.2], [1795.0, 1621.6, 291.7, 215.9, 218.6, 111.5, 195.9, 45.8, 53.6, 8.0, 39.2, 7.6, 31.1, 6.3, 211.8], [1316.0, 1059.6, 211.7, 274.0, 347.2, 87.9, 91.6, 41.0, 32.6, 2.6, 43.8, 11.8, 13.4, 9.8, 95.6], [1063.7, 804.4, 377.5, 208.3, 161.6, 161.6, 245.4, 43.2, 57.1, 3.8, 213.3, 115.7, 18.9, 11.6, 226.9], [861.8, 572.9, 149.7, 93.1, 78.5, 44.5, 32.6, 24.4, 12.2, 5.0, 5.6, 2.6, 6.1, 1.2, 39.9], [2321.9, 1544.5, 71.2, 72.7, 143.0, 18.0, 21.6, 3.5, 9.3, 1.0, 1.1, 1.3, 6.5, 0.0, 12.4], [555.6, 250.5, 68.7, 15.1, 1.6, 61.6, 52.4, 35.0, 21.0, 8.7, 1.5, 3.3, 4.7, 14.8, 100.4]], "matrixFarmers": [[5689, 4797, 1079, 1053, 117, 553, 522, 438, 318, 136, 40, 21, 133, 32, 624], [5610, 4075, 855, 263, 2, 308, 126, 166, 152, 313, 29, 23, 45, 5, 284], [5312, 4487, 1102, 834, 12, 638, 407, 390, 351, 190, 25, 120, 82, 27, 521], [5102, 3900, 805, 660, 40, 348, 207, 244, 133, 121, 40, 48, 82, 30, 359], [4573, 4078, 2010, 1292, 236, 817, 779, 407, 217, 56, 135, 66, 181, 88, 634], [4428, 2935, 1702, 689, 898, 448, 96, 274, 69, 4, 36, 15, 106, 47, 259], [4152, 3453, 1760, 883, 455, 721, 195, 534, 228, 13, 147, 42, 202, 71, 445], [4221, 3905, 3536, 1773, 604, 1780, 1665, 654, 416, 17, 748, 479, 313, 228, 1645], [4051, 3028, 292, 91, 0, 274, 39, 239, 217, 299, 5, 46, 17, 3, 229], [3905, 3183, 2292, 1401, 480, 929, 668, 575, 319, 45, 83, 126, 119, 78, 593], [4010, 3485, 799, 401, 97, 329, 452, 289, 187, 370, 66, 135, 44, 23, 438], [3827, 3599, 2943, 916, 309, 605, 1037, 363, 253, 15, 512, 149, 219, 123, 825], [3683, 2941, 1625, 491, 191, 710, 246, 230, 141, 4, 21, 45, 89, 36, 266], [3651, 3253, 2170, 1000, 18, 711, 1255, 726, 578, 205, 542, 373, 124, 190, 1297], [3620, 2791, 1052, 396, 61, 214, 204, 202, 146, 331, 64, 4, 18, 28, 222], [3462, 1971, 558, 232, 0, 411, 290, 301, 361, 189, 38, 57, 91, 19, 339], [3449, 2427, 2842, 1304, 1086, 884, 829, 462, 275, 8, 580, 47, 151, 143, 654], [3398, 2944, 1663, 904, 98, 1179, 1078, 956, 873, 291, 405, 222, 78, 184, 1050], [3180, 1527, 976, 278, 3, 246, 176, 129, 65, 95, 54, 123, 49, 14, 257], [3276, 2979, 1672, 951, 358, 647, 734, 300, 321, 19, 454, 85, 189, 82, 775], [3267, 2971, 2086, 1667, 759, 893, 939, 311, 262, 8, 407, 206, 88, 82, 759], [3063, 2705, 2591, 985, 270, 664, 1217, 227, 195, 17, 746, 300, 219, 159, 951], [3189, 2351, 1442, 761, 252, 519, 423, 361, 168, 39, 60, 36, 65, 28, 285], [3084, 2054, 518, 276, 225, 91, 69, 34, 51, 1, 7, 16, 25, 0, 69], [1812, 864, 317, 100, 3, 307, 238, 119, 74, 24, 6, 30, 23, 41, 221]]}, "pesticideTypes": {"Fungicides": 2556, "Insecticides": 8481, "Herbicides": 4137, "Rodenticides": 952, "Molluscides": 217}}
+</script>
+
+<script>
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const fmt1 = n => n.toLocaleString('en-US', {maximumFractionDigits:1, minimumFractionDigits:1});
+
+let currentSubcounty = 'All';
+let currentMetric = 'acreage';
+
+const SUBCOUNTY_COLORS = {
+  'Sabatia': '#37503A', 'Hamisi': '#A3492B', 'Vihiga': '#C69526',
+  'Luanda': '#6E3B33', 'Emuhaya': '#5B7A9A', 'Tiriki East': '#8A7B3E'
+};
+
+// ---------- Header KPIs ----------
+function renderKpiStrip(){
+  const m = DATA.meta;
+  const items = [
+    [fmt(m.totalFarmers), 'Registered farmers'],
+    [fmt(m.totalRecords), 'Crop entries'],
+    [fmt(m.totalAcreage) + ' ac', 'Land under crop'],
+    [m.wards, 'Wards, ' + m.subcounties + ' sub-counties'],
+    [m.distinctCrops, 'Distinct crops grown'],
+  ];
+  document.getElementById('kpiStrip').innerHTML = items.map(([n,l]) =>
+    `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+}
+
+// ---------- Filter pills ----------
+function renderPills(){
+  const names = ['All', ...DATA.bySubcounty.map(d => d.Subcounty)];
+  document.getElementById('subcountyPills').innerHTML = names.map(n =>
+    `<button class="pill ${n===currentSubcounty?'active':''}" data-sc="${n}" style="margin-right:6px;">${n}</button>`
+  ).join('');
+  document.querySelectorAll('#subcountyPills .pill').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ currentSubcounty = btn.dataset.sc; renderAll(); });
+  });
+}
+
+function renderMetricToggle(){
+  document.querySelectorAll('#metricToggle button').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.metric === currentMetric);
+    btn.onclick = () => { currentMetric = btn.dataset.metric; renderAll(); };
+  });
+}
+
+// ---------- Mini KPIs for filtered view ----------
+function renderMiniKpis(){
+  let farmers, acreage, wardCount;
+  if(currentSubcounty === 'All'){
+    farmers = DATA.meta.totalFarmers; acreage = DATA.meta.totalAcreage; wardCount = DATA.meta.wards;
+  } else {
+    const row = DATA.bySubcounty.find(d=>d.Subcounty===currentSubcounty);
+    farmers = row.farmers; acreage = row.acreage;
+    wardCount = DATA.byWard.filter(w=>w.Subcounty===currentSubcounty).length;
+  }
+  const items = [[fmt(farmers),'Farmers in view'], [fmt(acreage)+' ac','Acreage in view'], [wardCount,'Wards in view']];
+  document.getElementById('miniKpis').innerHTML = items.map(([v,k]) =>
+    `<div class="mini-kpi"><div class="v">${v}</div><div class="k">${k}</div></div>`).join('');
+}
+
+// ---------- Heatmap ----------
+function colorForRatio(r){
+  // r in [0,1] -> interpolate leaf-1 to leaf-5
+  const stops = ['#E9E4CD','#C7D3A8','#9DB77C','#6C9457','#3E6B3F'];
+  const scaled = r * (stops.length-1);
+  const i = Math.min(stops.length-2, Math.floor(scaled));
+  const frac = scaled - i;
+  const c1 = hexToRgb(stops[i]), c2 = hexToRgb(stops[i+1]);
+  const mix = c1.map((c,idx)=> Math.round(c + (c2[idx]-c)*frac));
+  return `rgb(${mix[0]},${mix[1]},${mix[2]})`;
+}
+function hexToRgb(hex){
+  const v = hex.replace('#','');
+  return [parseInt(v.substring(0,2),16), parseInt(v.substring(2,4),16), parseInt(v.substring(4,6),16)];
+}
+
+function renderHeatmap(){
+  const p = DATA.wardCropPivot;
+  const matrix = currentMetric === 'farmers' ? p.matrixFarmers : p.matrixAcreage;
+  const unit = currentMetric === 'farmers' ? 'farmers' : 'acres';
+
+  let wardIdx = p.wards.map((w,i)=>i);
+  if(currentSubcounty !== 'All'){
+    wardIdx = wardIdx.filter(i => {
+      const wardRow = DATA.byWard.find(w=>w.Ward===p.wards[i]);
+      return wardRow && wardRow.Subcounty === currentSubcounty;
+    });
+  }
+  // sort wards by total of the active metric, desc, within selection
+  wardIdx.sort((a,b)=>{
+    const sa = matrix[a].reduce((x,y)=>x+y,0);
+    const sb = matrix[b].reduce((x,y)=>x+y,0);
+    return sb-sa;
+  });
+
+  let maxVal = 0;
+  wardIdx.forEach(i => matrix[i].forEach(v => { if(v>maxVal) maxVal = v; }));
+
+  let thead = '<thead><tr><th class="rowlabel-head">Ward</th>' +
+    p.crops.map(c => `<th>${c}</th>`).join('') + '</tr></thead>';
+
+  let rows = wardIdx.map(i => {
+    const wardRow = DATA.byWard.find(w=>w.Ward===p.wards[i]);
+    const cells = matrix[i].map((v,ci)=>{
+      const ratio = maxVal>0 ? Math.pow(v/maxVal, 0.55) : 0;
+      const color = v>0 ? colorForRatio(ratio) : 'transparent';
+      const displayVal = currentMetric === 'farmers' ? fmt(v) : fmt1(v);
+      return `<td class="cell" title="${p.crops[ci]} — ${p.wards[i]}: ${displayVal} ${unit}"><div class="fill" style="background:${color}"></div></td>`;
+    }).join('');
+    return `<tr><th>${p.wards[i]}<span class="sc">${wardRow ? wardRow.Subcounty : ''}</span></th>${cells}</tr>`;
+  }).join('');
+
+  document.getElementById('heatmapTable').innerHTML = thead + '<tbody>' + rows + '</tbody>';
+
+  // legend
+  const stops = ['#E9E4CD','#C7D3A8','#9DB77C','#6C9457','#3E6B3F'];
+  document.getElementById('legendSwatches').innerHTML = stops.map(c=>`<div class="sw" style="background:${c}"></div>`).join('');
+  const maxDisplay = currentMetric === 'farmers' ? fmt(maxVal) : fmt1(maxVal);
+  document.getElementById('legendMax').textContent = maxDisplay + ' ' + unit + ' (single crop, single ward)';
+  document.getElementById('legendMin').textContent = '0 ' + unit;
+  document.getElementById('heatmapNote').textContent = currentMetric === 'farmers'
+    ? 'Number of farmers growing each crop, by ward. Darker plots = more growers. Hover a cell for the exact figure. Ranked within the sub-county filter above.'
+    : 'Acreage under each crop, by ward. Darker plots = more land under that crop. Hover a cell for the exact figure. Ranked within the sub-county filter above.';
+}
+
+// ---------- Crop bars ----------
+function renderCropBars(){
+  let crops = DATA.byCrop.slice();
+  crops.sort((a,b)=> b[currentMetric]-a[currentMetric]);
+  crops = crops.slice(0,10);
+  const max = crops[0][currentMetric];
+  document.getElementById('cropBars').innerHTML = crops.map((c,idx)=>{
+    const w = (c[currentMetric]/max*100).toFixed(1);
+    const rankClass = idx===0?'rank1':(idx===1?'rank2':'');
+    const val = currentMetric==='acreage' ? fmt1(c.acreage)+' ac' : fmt(c.farmers);
+    const avgPerFarmer = c.farmers>0 ? (c.acreage/c.farmers) : 0;
+    const detail = currentMetric==='acreage'
+      ? `${fmt(c.farmers)} farmers · ${avgPerFarmer.toFixed(2)} ac/farmer avg`
+      : `${fmt1(c.acreage)} ac total · ${avgPerFarmer.toFixed(2)} ac/farmer avg`;
+    return `<div class="barrow">
+      <div class="name">${c.CropName}</div>
+      <div class="trackwrap">
+        <div class="track"><div class="fill ${rankClass}" style="width:${w}%"></div></div>
+        <div class="detail">${detail}</div>
+      </div>
+      <div class="num">${val}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---------- Subcounty table ----------
+function renderSubcountyTable(){
+  const rows = DATA.bySubcounty.slice().sort((a,b)=>b[currentMetric]-a[currentMetric]);
+  let thead = `<thead><tr><th>Sub-county</th><th class="num">Farmers</th><th class="num">Acreage</th><th>Certified seed</th></tr></thead>`;
+  let body = rows.map(r=>{
+    const color = SUBCOUNTY_COLORS[r.Subcounty] || '#37503A';
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;background:${color};margin-right:7px;border-radius:1px;"></span>${r.Subcounty}</td>
+      <td class="num">${fmt(r.farmers)}</td>
+      <td class="num">${fmt1(r.acreage)}</td>
+      <td><div class="ratebar"><div class="track"><div class="fill" style="width:${r.certifiedRate}%"></div></div>${r.certifiedRate}%</div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('subcountyTable').innerHTML = thead + '<tbody>' + body + '</tbody>';
+}
+
+// ---------- Stat cards ----------
+function renderStatCards(){
+  const prod = DATA.productionSystem;
+  const prodTotal = Object.values(prod).reduce((a,b)=>a+b,0);
+  const prodColors = ['#37503A','#6C9457','#C69526','#A3492B','#6E3B33'];
+  const prodEntries = Object.entries(prod).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('prodSysCard').innerHTML = `
+    <h3>Production system</h3>
+    <div class="stackrow">${prodEntries.map(([k,v],i)=>`<div class="stackseg" style="width:${(v/prodTotal*100).toFixed(2)}%;background:${prodColors[i%prodColors.length]}"></div>`).join('')}</div>
+    <div class="segkey">${prodEntries.map(([k,v],i)=>`<div class="item"><span class="sw" style="background:${prodColors[i%prodColors.length]}"></span>${k}<b>${(v/prodTotal*100).toFixed(1)}%</b></div>`).join('')}</div>
+  `;
+
+  const water = DATA.waterSource;
+  const waterTotal = Object.values(water).reduce((a,b)=>a+b,0);
+  const waterColors = ['#37503A','#5B7A9A','#C69526'];
+  const waterEntries = Object.entries(water).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('waterCard').innerHTML = `
+    <h3>Water source</h3>
+    <div class="stackrow">${waterEntries.map(([k,v],i)=>`<div class="stackseg" style="width:${(v/waterTotal*100).toFixed(2)}%;background:${waterColors[i%waterColors.length]}"></div>`).join('')}</div>
+    <div class="segkey">${waterEntries.map(([k,v],i)=>`<div class="item"><span class="sw" style="background:${waterColors[i%waterColors.length]}"></span>${k}<b>${(v/waterTotal*100).toFixed(1)}%</b></div>`).join('')}</div>
+    <div style="margin-top:12px; font-size:11px; color:var(--ink-soft);">${(100-(water.Rainfed/waterTotal*100)).toFixed(1)}% of entries report any irrigation — rainfed farming dominates county-wide.</div>
+  `;
+
+  const pest = DATA.pesticideTypes;
+  const pestTotal = Object.values(pest).reduce((a,b)=>a+b,0) || 1;
+  const pestColors = ['#A3492B','#C69526','#6C9457','#6E3B33','#5B7A9A'];
+  const pestEntries = Object.entries(pest).sort((a,b)=>b[1]-a[1]);
+  const overallPestRate = DATA.bySubcounty.reduce((s,r)=>s+r.records*r.pesticideRate,0) / DATA.bySubcounty.reduce((s,r)=>s+r.records,0);
+  document.getElementById('pestCard').innerHTML = `
+    <h3>Pesticide use — ${overallPestRate.toFixed(1)}% of entries</h3>
+    <div class="stackrow">${pestEntries.map(([k,v],i)=>`<div class="stackseg" style="width:${(v/pestTotal*100).toFixed(2)}%;background:${pestColors[i%pestColors.length]}"></div>`).join('')}</div>
+    <div class="segkey">${pestEntries.map(([k,v],i)=>`<div class="item"><span class="sw" style="background:${pestColors[i%pestColors.length]}"></span>${k}<b>${(v/pestTotal*100).toFixed(1)}%</b></div>`).join('')}</div>
+    <div style="margin-top:12px; font-size:11px; color:var(--ink-soft);">Breakdown among the ${fmt(pestTotal)} entries that report using any pesticide.</div>
+  `;
+}
+
+// ---------- Purpose rows ----------
+function renderPurposeRows(){
+  const order = ['Subsistence','Both','Commercial'];
+  const colors = {'Subsistence':'#37503A','Both':'#C69526','Commercial':'#A3492B'};
+  const rows = DATA.bySubcounty.map(r=>r.Subcounty);
+  document.getElementById('purposeRows').innerHTML = rows.map(sc=>{
+    const pct = DATA.purposePctBySubcounty[sc];
+    return `<div class="prow">
+      <div class="lbl"><span>${sc}</span><b>${pct.Subsistence.toFixed(0)}% subsistence · ${pct.Both.toFixed(0)}% both · ${pct.Commercial.toFixed(0)}% commercial</b></div>
+      <div class="pstack">${order.map(o=>`<div style="width:${pct[o]}%;background:${colors[o]}"></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---------- Data flags ----------
+function renderFlags(){
+  const m = DATA.meta;
+  const flags = [];
+  if(m.negativeAcreageRows>0) flags.push(`⚠ ${m.negativeAcreageRows} rows with negative acreage`);
+  if(m.missingFarmerName>0) flags.push(`⚠ ${m.missingFarmerName} rows missing farmer name`);
+  if(m.missingWard>0) flags.push(`⚠ ${m.missingWard} rows missing ward`);
+  document.getElementById('dataFlags').innerHTML = flags.join('');
+}
+
+function renderAll(){
+  renderPills();
+  renderMetricToggle();
+  renderMiniKpis();
+  renderHeatmap();
+  renderCropBars();
+  renderSubcountyTable();
+}
+
+renderKpiStrip();
+renderStatCards();
+renderPurposeRows();
+renderFlags();
+renderAll();
+</script>
+
+</body>
+</html>
